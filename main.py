@@ -2,95 +2,184 @@ import torch
 import numpy as np
 import joblib
 import pandas as pd
-from src import config
+import tkinter as tk
+from tkinter import messagebox
+
 from src.model import MLP
-from src.preprocess import load_data, prepare_features
-from sklearn.preprocessing import StandardScaler
 
 MODEL_PATH = "model/credit_model.pt"
 SCALER_PATH = "model/scaler.pkl"
 
+feature_names_rus = [
+    "Коэффициент использования незаблокированных кредитных линий",
+    "Возраст",
+    "Количество просрочек 30-59 дней",
+    "Долговая нагрузка (Debt Ratio)",
+    "Ежемесячный доход",
+    "Количество открытых кредитных линий",
+    "Количество просрочек более 90 дней",
+    "Количество кредитов на недвижимость",
+    "Количество просрочек 60-89 дней",
+    "Количество иждивенцев"
+]
+feature_names_orig = [
+    "RevolvingUtilizationOfUnsecuredLines",
+    "age",
+    "NumberOfTime30-59DaysPastDueNotWorse",
+    "DebtRatio",
+    "MonthlyIncome",
+    "NumberOfOpenCreditLinesAndLoans",
+    "NumberOfTimes90DaysLate",
+    "NumberRealEstateLoansOrLines",
+    "NumberOfTime60-89DaysPastDueNotWorse",
+    "NumberOfDependents"
+]
+
 def load_scaler(path=SCALER_PATH):
-    """
-    Загружает сохранённый StandardScaler.
-    """
     scaler = joblib.load(path)
     return scaler
 
 def load_model(input_dim, path=MODEL_PATH):
-    """
-    Загружает сохранённую модель.
-    """
     model = MLP(input_dim)
-    model.load_state_dict(torch.load(path))
+    model.load_state_dict(torch.load(path, map_location=torch.device('cpu')))
     model.eval()
     return model
 
-def get_user_input(feature_names_rus):
-    """
-    Получает ввод пользователя по всем признакам.
-    """
-    print("Введите значения признаков через запятую (в порядке):")
-    for name in feature_names_rus:
-        print(f" - {name}")
-    raw = input("\n> ")
-    values = list(map(float, raw.strip().split(',')))
-    if len(values) != len(feature_names_rus):
-        raise ValueError(f"Ожидалось {len(feature_names_rus)} значений, получено {len(values)}.")
-    return np.array(values).reshape(1, -1)
+scaler = load_scaler()
+model = load_model(len(feature_names_rus))
+LABEL_COLOR = "#343361"
+COLORS = {
+    "main_bg": "#F1EEDD",
+    "panel_bg": "#343361",
+    "panel_fg": "#F1EEDD",
+    "entry_bg": "#8788AC",
+    "entry_fg": "#FFFFFF",
+    "field_bg": "#89A894",
+    "button_bg": "#343361",
+    "button_fg": "#F1EEDD",
+    "button_active_bg": "#8788AC",
+    "button_active_fg": "#F1EEDD",
+    "result_high": "#c0362c",
+    "result_low": "#337a6a",
+}
 
-def main():
-    # Русские названия признаков (порядок должен совпадать с обучением)
-    feature_names_rus = [
-        "Коэффициент использования незаблокированных кредитных линий",
-        "Возраст",
-        "Количество просрочек 30-59 дней",
-        "Долговая нагрузка (Debt Ratio)",
-        "Ежемесячный доход",
-        "Количество открытых кредитных линий",
-        "Количество просрочек более 90 дней",
-        "Количество кредитов на недвижимость",
-        "Количество просрочек 60-89 дней",
-        "Количество иждивенцев"
-    ]
+class CreditApp(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        self.title("Кредитный скоринг")
+        self.geometry("740x600")
+        self.resizable(False, False)
+        self.configure(bg=COLORS["main_bg"])
 
-    # Названия колонок в исходном датасете и scaler-е
-    feature_names_orig = [
-        "RevolvingUtilizationOfUnsecuredLines",
-        "age",
-        "NumberOfTime30-59DaysPastDueNotWorse",
-        "DebtRatio",
-        "MonthlyIncome",
-        "NumberOfOpenCreditLinesAndLoans",
-        "NumberOfTimes90DaysLate",
-        "NumberRealEstateLoansOrLines",
-        "NumberOfTime60-89DaysPastDueNotWorse",
-        "NumberOfDependents"
-    ]
+        # Верхняя панель
+        panel = tk.Frame(self, bg=COLORS["panel_bg"], height=90)
+        panel.pack(fill=tk.X)
+        tk.Label(panel, text="💳 Кредитный скоринг",
+                 bg=COLORS["panel_bg"], fg=COLORS["panel_fg"],
+                 font=("Arial", 26, "bold")).pack(pady=(20, 0))
 
-    try:
-        scaler = load_scaler()
-        input_dim = len(feature_names_rus)
-        model = load_model(input_dim)
+        # ---- Scrollable Canvas ----
+        container = tk.Frame(self, bg=COLORS["main_bg"])
+        container.pack(fill=tk.BOTH, expand=True, padx=0, pady=(5,0))
 
-        user_input = get_user_input(feature_names_rus)
+        canvas = tk.Canvas(container, bg=COLORS["main_bg"], bd=0, highlightthickness=0)
+        canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
-        # Создаём DataFrame с правильными названиями колонок для scaler
-        user_input_df = pd.DataFrame(user_input, columns=feature_names_orig)
+        scrollbar = tk.Scrollbar(container, orient="vertical", command=canvas.yview)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-        user_input_scaled = scaler.transform(user_input_df)
-        input_tensor = torch.tensor(user_input_scaled, dtype=torch.float32)
+        form = tk.Frame(canvas, bg=COLORS["main_bg"])
+        form.bind(
+            "<Configure>",
+            lambda e: canvas.configure(
+                scrollregion=canvas.bbox("all")
+            )
+        )
 
-        with torch.no_grad():
-            prediction = model(input_tensor).item()
+        canvas.create_window((0, 0), window=form, anchor="nw")
+        canvas.configure(yscrollcommand=scrollbar.set)
 
-        print(f"\n🔮 Вероятность дефолта: {prediction * 100:.2f}%")
-        if prediction > 0.5:
-            print("⚠️ Высокий риск дефолта!")
-        else:
-            print("✅ Риск дефолта низкий.")
-    except Exception as e:
-        print(f"⚠️ Ошибка: {e}")
+        self.entries = []
+
+        LABEL_WIDTH = 37  # кол-во символов
+        ENTRY_WIDTH = 21  # кол-во символов для Entry
+        WRAPLEN = 350     # ширина в пикселях для переноса текста
+
+        for i, name in enumerate(feature_names_rus):
+            field = tk.Frame(form, bg=COLORS["main_bg"])
+            field.pack(fill=tk.X, padx=32, pady=10)
+            label = tk.Label(field, anchor='w', text=name+":",
+font=("Arial", 13, "bold"),
+                             bg=COLORS["field_bg"], fg=COLORS["panel_bg"],
+                             relief="flat", padx=10, pady=9,
+                             wraplength=WRAPLEN, justify='left', width=LABEL_WIDTH)
+            label.grid(row=0, column=0, sticky="wens")
+            entry = tk.Entry(field, font=("Arial", 14), bg=COLORS["entry_bg"], fg=COLORS["entry_fg"],
+                             width=ENTRY_WIDTH, relief="flat", insertbackground=COLORS["panel_bg"], bd=2,
+                             highlightthickness=0, justify='center')
+            entry.grid(row=0, column=1, padx=(14, 0), ipadx=4, ipady=5, sticky="e")
+            self.entries.append(entry)
+
+            # Гарантированно одинаковая высота полей
+            field.grid_columnconfigure(0, minsize=WRAPLEN+18)
+            field.grid_columnconfigure(1, minsize=182)
+
+        # Результат
+        self.result_label = tk.Label(self, text="", font=("Arial", 18, "bold"), bg=COLORS["main_bg"])
+        self.result_label.pack(pady=22)
+
+        # Крупная кнопка
+        self.button = tk.Button(
+            self,
+            text="Рассчитать вероятность дефолта",
+            font=("Arial", 16, "bold"),
+            command=self.predict,
+            bg=COLORS["button_bg"],  # оставить как есть (фон)
+            fg=LABEL_COLOR,  # цвет текста кнопки (уже как у лейблов)
+            activebackground=COLORS["button_active_bg"],
+            activeforeground=LABEL_COLOR,  # цвет текста при наведении
+            disabledforeground=LABEL_COLOR,  # если кнопка неактивна
+            bd=0,
+            relief="flat",
+            padx=20,
+            pady=10,
+            cursor="hand2"
+        )
+        self.button.pack(pady=10)
+
+        # Mousewheel scroll for entries
+        def _on_mousewheel(event):
+            if event.delta:
+                canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+        canvas.bind_all("<MouseWheel>", _on_mousewheel)
+
+    def predict(self):
+        try:
+            values = []
+            for i, entry in enumerate(self.entries):
+                val = entry.get().replace(",", ".").strip()
+                if not val:
+                    raise ValueError(f"Заполните поле: {feature_names_rus[i]}")
+                val = float(val)
+                values.append(val)
+            input_nd = np.array(values).reshape(1, -1)
+            df = pd.DataFrame(input_nd, columns=feature_names_orig)
+            input_scaled = scaler.transform(df)
+            X_tensor = torch.tensor(input_scaled, dtype=torch.float32)
+            with torch.no_grad():
+                prediction = model(X_tensor).item()
+            percent = prediction * 100
+            if prediction > 0.5:
+                verdict = "⚠️ Высокий риск дефолта"
+                color = COLORS["result_high"]
+            else:
+                verdict = "✅ Риск дефолта низкий"
+                color = COLORS["result_low"]
+            text = f"Вероятность дефолта: {percent:.2f}%\n{verdict}"
+            self.result_label.config(text=text, fg=color)
+        except Exception as e:
+            messagebox.showerror("Ошибка", str(e))
 
 if __name__ == "__main__":
-    main()
+    app = CreditApp()
+    app.mainloop()
