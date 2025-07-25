@@ -1,0 +1,10 @@
+.venv/
+*.pyc
+__pycache__/
+.env
+.idea
+reports/
+model/credit_model.pt
+model/scaler.pkl
+data/GiveMeSomeCredit-testing.csv
+data/GiveMeSomeCredit-training.csv
