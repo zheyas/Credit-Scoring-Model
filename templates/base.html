@@ -1,0 +1,89 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Credit AI - Кредитный скоринг 🔥{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <header class="header">
+        <nav class="nav-container">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg class="neon-bulb" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
+                                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                                <feMerge>
+                                    <feMergeNode in="coloredBlur"/>
+                                    <feMergeNode in="SourceGraphic"/>
+                                </feMerge>
+                            </filter>
+                            <linearGradient id="neonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#8b45f1;stop-opacity:0.8" />
+                            </linearGradient>
+                        </defs>
+
+                        <!-- Abstract glowing lines background -->
+                        <path d="M10 20 Q30 10 50 20 T90 25" stroke="#8b45f1" stroke-width="1" fill="none" opacity="0.3">
+                            <animate attributeName="opacity" values="0.3;0.6;0.3" dur="4s" repeatCount="indefinite"/>
+                        </path>
+                        <path d="M15 80 Q35 70 55 75 T85 80" stroke="#6366f1" stroke-width="1" fill="none" opacity="0.4">
+                            <animate attributeName="opacity" values="0.4;0.7;0.4" dur="3s" repeatCount="indefinite"/>
+                        </path>
+
+                        <!-- Main bulb outline - geometric arc -->
+                        <path d="M35 45 Q35 25 50 25 Q65 25 65 45 Q65 55 60 60 L60 65 L40 65 L40 60 Q35 55 35 45 Z"
+                              fill="none" stroke="white" stroke-width="2" filter="url(#neonGlow)" opacity="0.9"/>
+
+                        <!-- Base -->
+                        <rect x="40" y="65" width="20" height="8" rx="2"
+                              fill="none" stroke="white" stroke-width="2" filter="url(#neonGlow)" opacity="0.9"/>
+                        <line x1="42" y1="67" x2="58" y2="67" stroke="white" stroke-width="1" opacity="0.7"/>
+                        <line x1="42" y1="70" x2="58" y2="70" stroke="white" stroke-width="1" opacity="0.7"/>
+
+                        <!-- Star-like sparkle -->
+                        <g transform="translate(70, 35)">
+                            <path d="M0,-8 L2,-2 L8,0 L2,2 L0,8 L-2,2 L-8,0 L-2,-2 Z"
+                                  fill="white" opacity="0.8" filter="url(#neonGlow)">
+                                <animateTransform attributeName="transform"
+                                                attributeType="XML"
+                                                type="rotate"
+                                                values="0;360"
+                                                dur="6s"
+                                                repeatCount="indefinite"/>
+                            </path>
+                        </g>
+
+                        <!-- Inner glow effect -->
+                        <ellipse cx="50" cy="40" rx="12" ry="15" fill="url(#neonGrad)" opacity="0.3">
+<animate attributeName="opacity" values="0.3;0.6;0.3" dur="2s" repeatCount="indefinite"/>
+                        </ellipse>
+                    </svg>
+                </div>
+                <div class="logo-text">CreditAI</div>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/about" class="nav-link">О нас</a></li>
+                <li><a href="/faq" class="nav-link">Полезные советы</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    {% block content %}{% endblock %}
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>
