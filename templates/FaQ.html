@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - Полезные советы | CreditAI</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --secondary: #8b5cf6;
+            --accent: #06ffa5;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
+            --dark: #0f0f23;
+            --darker: #050505;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--dark) 0%, #1a1a2e 50%, var(--darker) 100%);
+            color: var(--light);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(99, 102, 241, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(99, 102, 241, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+            z-index: 1;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .floating-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            opacity: 0.1;
+            animation: float 15s ease-in-out infinite;
+        }
+
+        .shape:nth-child(1) { width: 100px; height: 100px; top: 10%; left: 10%; animation-delay: 0s; }
+        .shape:nth-child(2) { width: 150px; height: 150px; top: 20%; right: 15%; animation-delay: 5s; }
+        .shape:nth-child(3) { width: 80px; height: 80px; top: 60%; left: 20%; animation-delay: 10s; }
+        .shape:nth-child(4) { width: 120px; height: 120px; bottom: 20%; right: 10%; animation-delay: 15s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-30px) rotate(120deg); }
+            66% { transform: translateY(-15px) rotate(240deg); }
+        }
+
+        /* Header */
+        .header {
+            position: relative;
+            z-index: 100;
+            background: rgba(15, 15, 35, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(139, 69, 241, 0.3);
+        }
+
+        .neon-bulb {
+            width: 40px;
+            height: 40px;
+            filter: drop-shadow(0 0 15px #8b45f1) drop-shadow(0 0 30px #8b45f1);
+            animation: neonPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes neonPulse {
+            0%, 100% {
+                filter: drop-shadow(0 0 15px #8b45f1) drop-shadow(0 0 30px #8b45f1);
+                opacity: 1;
+            }
+            50% {
+                filter: drop-shadow(0 0 25px #8b45f1) drop-shadow(0 0 50px #8b45f1) drop-shadow(0 0 70px #6366f1);
+                opacity: 0.9;
+            }
+        }
+
+        .logo-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--accent);
+        }
+
+        /* Main container */
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Hero section */
+        .hero {
+            text-align: center;
+            padding: 4rem 0 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--light), var(--accent), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            line-height: 1.1;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: var(--gray);
+            margin-bottom: 2rem;
+        }
+
+        /* Risk categories section */
+        .risk-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .risk-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .risk-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+        }
+
+        .risk-card.low-risk::before {
+            background: linear-gradient(90deg, var(--success), #22c55e);
+        }
+
+        .risk-card.medium-risk::before {
+            background: linear-gradient(90deg, var(--warning), #fbbf24);
+        }
+
+        .risk-card.high-risk::before {
+            background: linear-gradient(90deg, var(--danger), #f87171);
+        }
+
+        .risk-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.2);
+        }
+
+        .risk-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .risk-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .low-risk .risk-title { color: var(--success); }
+        .medium-risk .risk-title { color: var(--warning); }
+        .high-risk .risk-title { color: var(--danger); }
+
+        .risk-score {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            opacity: 0.8;
+        }
+
+        .risk-description {
+            color: var(--gray);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .risk-tips {
+            list-style: none;
+        }
+
+        .risk-tips li {
+            padding: 0.5rem 0;
+            padding-left: 2rem;
+            position: relative;
+            color: var(--light);
+            line-height: 1.5;
+        }
+
+        .risk-tips li::before {
+            content: '✨';
+            position: absolute;
+            left: 0;
+            top: 0.5rem;
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 3rem;
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .faq-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .faq-item {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item:hover {
+            border-color: var(--primary);
+        }
+
+        .faq-question {
+            padding: 1.5rem 2rem;
+            background: rgba(99, 102, 241, 0.1);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .faq-question:hover {
+            background: rgba(99, 102, 241, 0.2);
+        }
+
+        .faq-toggle {
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-answer {
+            padding: 0 2rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .faq-answer.active {
+            padding: 1.5rem 2rem;
+            max-height: 500px;
+        }
+
+        .faq-answer p {
+            color: var(--gray);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .faq-answer ul {
+            list-style: none;
+            margin-left: 1rem;
+        }
+
+        .faq-answer li {
+            padding: 0.3rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--light);
+        }
+
+        .faq-answer li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+        }
+
+        /* Tips section */
+        .tips-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 3rem;
+            margin-bottom: 4rem;
+        }
+
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .tip-card {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .tip-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent);
+        }
+
+        .tip-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .tip-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .tip-description {
+            color: var(--gray);
+            line-height: 1.5;
+        }
+
+        /* Back button */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-menu {
+                gap: 1rem;
+            }
+
+            .risk-categories {
+                grid-template-columns: 1fr;
+            }
+
+            .tips-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <header class="header">
+        <nav class="nav-container">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg class="neon-bulb" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
+                                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                                <feMerge>
+                                    <feMergeNode in="coloredBlur"/>
+                                    <feMergeNode in="SourceGraphic"/>
+                                </feMerge>
+                            </filter>
+                            <linearGradient id="neonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#8b45f1;stop-opacity:0.8" />
+                            </linearGradient>
+                        </defs>
+
+                        <path d="M10 20 Q30 10 50 20 T90 25" stroke="#8b45f1" stroke-width="1" fill="none" opacity="0.3">
+                            <animate attributeName="opacity" values="0.3;0.6;0.3" dur="4s" repeatCount="indefinite"/>
+                        </path>
+                        <path d="M15 80 Q35 70 55 75 T85 80" stroke="#6366f1" stroke-width="1" fill="none" opacity="0.4">
+                            <animate attributeName="opacity" values="0.4;0.7;0.4" dur="3s" repeatCount="indefinite"/>
+                        </path>
+
+                        <path d="M35 45 Q35 25 50 25 Q65 25 65 45 Q65 55 60 60 L60 65 L40 65 L40 60 Q35 55 35 45 Z"
+                              fill="none" stroke="white" stroke-width="2" filter="url(#neonGlow)" opacity="0.9"/>
+
+                        <rect x="40" y="65" width="20" height="8" rx="2"
+                              fill="none" stroke="white" stroke-width="2" filter="url(#neonGlow)" opacity="0.9"/>
+                        <line x1="42" y1="67" x2="58" y2="67" stroke="white" stroke-width="1" opacity="0.7"/>
+                        <line x1="42" y1="70" x2="58" y2="70" stroke="white" stroke-width="1" opacity="0.7"/>
+
+                        <g transform="translate(70, 35)">
+                            <path d="M0,-8 L2,-2 L8,0 L2,2 L0,8 L-2,2 L-8,0 L-2,-2 Z"
+                                  fill="white" opacity="0.8" filter="url(#neonGlow)">
+                                <animateTransform attributeName="transform"
+                                                attributeType="XML"
+                                                type="rotate"
+                                                values="0;360"
+                                                dur="6s"
+                                                repeatCount="indefinite"/>
+                            </path>
+                        </g>
+
+                        <ellipse cx="50" cy="40" rx="12" ry="15" fill="url(#neonGrad)" opacity="0.3">
+                            <animate attributeName="opacity" values="0.3;0.6;0.3" dur="2s" repeatCount="indefinite"/>
+                        </ellipse>
+                    </svg>
+                </div>
+                <div class="logo-text">CreditAI</div>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/about" class="nav-link">О нас</a></li>
+                <li><a href="/faq" class="nav-link active">Полезные советы</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <a href="/" class="back-btn" onclick="history.back()">
+            ← Вернуться к анализу
+        </a>
+
+        <section class="hero">
+            <h1 class="hero-title">FAQ & Полезные советы 🧠</h1>
+            <p class="hero-subtitle">Всё что нужно знать о кредитном скоринге и категориях риска</p>
+        </section>
+
+        <section class="risk-categories">
+            <div class="risk-card low-risk">
+    <span class="risk-icon">🟢</span>
+    <h3 class="risk-title">Низкий риск</h3>
+    <div class="risk-score">Одобрение кредита: 95%</div>
+    <p class="risk-description">
+        Отличная кредитная история и финансовая стабильность. Банки охотно одобряют кредиты с лучшими условиями.
+    </p>
+    <ul class="risk-tips">
+        <li>Кредит одобряется в 95% случаев</li>
+        <li>Минимальные процентные ставки</li>
+        <li>Возможность получить большие суммы</li>
+        <li>Быстрое рассмотрение заявки</li>
+        <li>Доступны премиальные продукты</li>
+    </ul>
+</div>
+
+<div class="risk-card medium-risk">
+    <span class="risk-icon">🟡</span>
+    <h3 class="risk-title">Средний риск</h3>
+    <div class="risk-score">Одобрение кредита: 65%</div>
+    <p class="risk-description">
+        Умеренный риск для банка. Возможно одобрение, но с дополнительными условиями и проверками.
+    </p>
+    <ul class="risk-tips">
+        <li>Кредит одобряется в 60-70% случаев</li>
+        <li>Средние процентные ставки</li>
+        <li>Могут потребоваться поручители</li>
+        <li>Дополнительная проверка документов</li>
+        <li>Возможно снижение суммы кредита</li>
+    </ul>
+</div>
+
+<div class="risk-card high-risk">
+    <span class="risk-icon">🔴</span>
+    <h3 class="risk-title">Высокий риск</h3>
+    <div class="risk-score">Одобрение кредита: 20%</div>
+    <p class="risk-description">
+        Высокий риск невозврата. Банки крайне осторожны и чаще отклоняют заявки или предлагают жёсткие условия.
+    </p>
+    <ul class="risk-tips">
+        <li>Кредит одобряется в 15-25% случаев</li>
+        <li>Высокие процентные ставки</li>
+        <li>Обязательное залоговое обеспечение</li>
+        <li>Строгая проверка всех документов</li>
+        <li>Рекомендуется улучшить показатели</li>
+    </ul>
+</div>
+
+        </section>
+
+        <section class="faq-section">
+            <h2 class="section-title">Часто задаваемые вопросы 🤔</h2>
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>Как улучшить свой кредитный скоринг?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Существует несколько проверенных способов повысить кредитный рейтинг:</p>
+                        <ul>
+                            <li>Погашайте кредиты и займы вовремя</li>
+                            <li>Не допускайте просрочек по платежам</li>
+                            <li>Поддерживайте стабильный доход</li>
+                            <li>Не берите слишком много кредитов одновременно</li>
+                            <li>Ведите активную банковскую деятельность</li>
+                            <li>Исправьте ошибки в кредитной истории</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>Что влияет на кредитный скоринг больше всего?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Основные факторы, влияющие на скоринг:</p>
+                        <ul>
+                            <li><strong>История платежей (35%)</strong> - самый важный фактор</li>
+                            <li><strong>Долговая нагрузка (30%)</strong> - отношение долга к доходу</li>
+                            <li><strong>Длительность кредитной истории (15%)</strong></li>
+                            <li><strong>Типы кредитов (10%)</strong> - разнообразие продуктов</li>
+                            <li><strong>Новые кредиты (10%)</strong> - частота обращений</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>Как часто обновляется кредитный скоринг?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Кредитный скоринг обновляется регулярно:</p>
+                        <ul>
+                            <li>Ежемесячно при поступлении новых данных</li>
+                            <li>При каждом обращении за кредитом</li>
+                            <li>При изменении финансового статуса</li>
+                            <li>При погашении или просрочке платежей</li>
+                        </ul>
+                        <p>Положительные изменения могут отразиться через 1-3 месяца.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>Можно ли получить кредит с плохой историей?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Да, но с ограничениями:</p>
+                        <ul>
+                            <li>Обратитесь в МФО или банки второго эшелона</li>
+                            <li>Рассмотрите залоговые кредиты</li>
+                            <li>Привлеките поручителей с хорошей историей</li>
+                            <li>Начните с небольших сумм</li>
+                            <li>Рассмотрите кредитные карты с лимитом</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>Влияет ли возраст на кредитный скоринг?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Возраст косвенно влияет на скоринг:</p>
+                        <ul>
+                            <li><strong>25-45 лет</strong> - оптимальный возраст для кредитования</li>
+                            <li><strong>18-25 лет</strong> - ограниченная история, но потенциал роста</li>
+                            <li><strong>45-60 лет</strong> - стабильность, но приближение к пенсии</li>
+                            <li><strong>60+ лет</strong> - повышенные риски из-за пенсионного возраста</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>Что делать, если кредит отклонили?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>План действий после отказа:</p>
+                        <ul>
+                            <li>Узнайте причину отказа у банка</li>
+                            <li>Проверьте свою кредитную историю</li>
+                            <li>Исправьте найденные ошибки</li>
+                            <li>Подождите 1-2 месяца перед новой заявкой</li>
+                            <li>Рассмотрите другие банки или продукты</li>
+                            <li>Улучшите финансовые показатели</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="tips-section">
+            <h2 class="section-title">Лайфхаки для улучшения скоринга 💡</h2>
+            <div class="tips-grid">
+                <div class="tip-card">
+                    <span class="tip-icon">💳</span>
+                    <h3 class="tip-title">Используйте кредитную карту</h3>
+                    <p class="tip-description">
+                        Регулярно пользуйтесь кредиткой и погашайте долг вовремя. Это показывает банкам вашу надёжность.
+                    </p>
+                </div>
+
+                <div class="tip-card">
+                    <span class="tip-icon">📊</span>
+                    <h3 class="tip-title">Контролируйте долговую нагрузку</h3>
+                    <p class="tip-description">
+                        Держите отношение ежемесячных платежей к доходу ниже 40%. Идеально - до 30%.
+                    </p>
+                </div>
+
+                <div class="tip-card">
+                    <span class="tip-icon">🏦</span>
+                    <h3 class="tip-title">Работайте с одним банком</h3>
+                    <p class="tip-description">
+                        Длительные отношения с банком повышают лояльность и улучшают условия кредитования.
+                    </p>
+                </div>
+
+                <div class="tip-card">
+                    <span class="tip-icon">📱</span>
+                    <h3 class="tip-title">Следите за кредитной историей</h3>
+                    <p class="tip-description">
+                        Регулярно проверяйте отчёт в БКИ и сразу исправляйте найденные ошибки.
+                    </p>
+                </div>
+
+                <div class="tip-card">
+                    <span class="tip-icon">💰</span>
+                    <h3 class="tip-title">Увеличивайте доходы</h3>
+                    <p class="tip-description">
+                        Официальное трудоустройство и рост зарплаты значительно улучшают скоринг.
+                    </p>
+                </div>
+
+                <div class="tip-card">
+                    <span class="tip-icon">⏰</span>
+                    <h3 class="tip-title">Не спешите с заявками</h3>
+                    <p class="tip-description">
+                        Множественные заявки за короткий период негативно влияют на рейтинг. Делайте паузы.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function toggleFaq(element) {
+            const answer = element.nextElementSibling;
+            const toggle = element.querySelector('.faq-toggle');
+
+            // Close all other FAQ items
+            document.querySelectorAll('.faq-answer').forEach(item => {
+                if (item !== answer) {
+                    item.classList.remove('active');
+                    item.previousElementSibling.querySelector('.faq-toggle').textContent = '+';
+                    item.previousElementSibling.querySelector('.faq-toggle').style.transform = 'rotate(0deg)';
+                }
+            });
+
+            // Toggle current FAQ item
+            answer.classList.toggle('active');
+
+            if (answer.classList.contains('active')) {
+                toggle.textContent = '−';
+                toggle.style.transform = 'rotate(180deg)';
+            } else {
+                toggle.textContent = '+';
+                toggle.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // Add smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97d08558b2201a6b',t:'MTc1NzUyNDAzOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

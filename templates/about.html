@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>О нас - ИИ-Геннадий | CreditAI</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --secondary: #8b5cf6;
+            --accent: #06ffa5;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
+            --dark: #0f0f23;
+            --darker: #050505;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--dark) 0%, #1a1a2e 50%, var(--darker) 100%);
+            color: var(--light);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(99, 102, 241, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(99, 102, 241, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+            z-index: 1;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .floating-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            opacity: 0.1;
+            animation: float 15s ease-in-out infinite;
+        }
+
+        .shape:nth-child(1) { width: 100px; height: 100px; top: 10%; left: 10%; animation-delay: 0s; }
+        .shape:nth-child(2) { width: 150px; height: 150px; top: 20%; right: 15%; animation-delay: 5s; }
+        .shape:nth-child(3) { width: 80px; height: 80px; top: 60%; left: 20%; animation-delay: 10s; }
+        .shape:nth-child(4) { width: 120px; height: 120px; bottom: 20%; right: 10%; animation-delay: 15s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-30px) rotate(120deg); }
+            66% { transform: translateY(-15px) rotate(240deg); }
+        }
+
+        /* Header */
+        .header {
+            position: relative;
+            z-index: 100;
+            background: rgba(15, 15, 35, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(139, 69, 241, 0.3);
+        }
+
+        .neon-bulb {
+            width: 40px;
+            height: 40px;
+            filter: drop-shadow(0 0 15px #8b45f1) drop-shadow(0 0 30px #8b45f1);
+            animation: neonPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes neonPulse {
+            0%, 100% {
+                filter: drop-shadow(0 0 15px #8b45f1) drop-shadow(0 0 30px #8b45f1);
+                opacity: 1;
+            }
+            50% {
+                filter: drop-shadow(0 0 25px #8b45f1) drop-shadow(0 0 50px #8b45f1) drop-shadow(0 0 70px #6366f1);
+                opacity: 0.9;
+            }
+        }
+
+        .logo-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--accent);
+        }
+
+        /* Main container */
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Back button */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+        }
+
+        /* Hero section */
+        .hero {
+            text-align: center;
+            padding: 4rem 0 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--light), var(--accent), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            line-height: 1.1;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: var(--gray);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Gennady section */
+        .gennady-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            margin-bottom: 4rem;
+        }
+
+        .gennady-image {
+            position: relative;
+            text-align: center;
+        }
+        .robot-image {
+    width: 60%;
+    height: 60%;
+    object-fit: contain;
+    animation: avatarFloat 4s ease-in-out infinite;
+}
+        .gennady-avatar {
+            width: 350px;
+            height: 350px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            border: 3px solid var(--accent);
+            position: relative;
+            overflow: hidden;
+            animation: avatarFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes avatarFloat {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-10px) scale(1.02); }
+        }
+
+        .gennady-avatar::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, var(--accent), var(--primary), var(--secondary), var(--accent));
+            animation: rotate 8s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .gennady-emoji {
+            font-size: 8rem;
+            filter: drop-shadow(0 0 30px rgba(6, 255, 165, 0.5));
+        }
+
+        .gennady-status {
+            margin-top: 2rem;
+            padding: 1rem 2rem;
+            background: rgba(6, 255, 165, 0.1);
+            border: 1px solid rgba(6, 255, 165, 0.3);
+            border-radius: 20px;
+            display: inline-block;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .gennady-info {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 3rem;
+            position: relative;
+        }
+
+        .gennady-info::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--primary), var(--secondary));
+        }
+
+        .gennady-name {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .gennady-title {
+            font-size: 1.3rem;
+            color: var(--gray);
+            margin-bottom: 2rem;
+            font-weight: 500;
+        }
+
+        .gennady-description {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: var(--light);
+            margin-bottom: 2rem;
+        }
+
+        .gennady-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .stat-item {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* Features section */
+        .features-section {
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 3rem;
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+            box-shadow: 0 20px 40px rgba(6, 255, 165, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .feature-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--light);
+        }
+
+        .feature-description {
+            color: var(--gray);
+            line-height: 1.6;
+        }
+
+        /* Timeline section */
+        .timeline-section {
+            margin-bottom: 4rem;
+        }
+
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--primary), var(--accent));
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 3rem;
+            width: 50%;
+        }
+
+        .timeline-item:nth-child(odd) {
+            left: 0;
+            padding-right: 3rem;
+            text-align: right;
+        }
+
+        .timeline-item:nth-child(even) {
+            left: 50%;
+            padding-left: 3rem;
+            text-align: left;
+        }
+
+        .timeline-content {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content::after {
+            content: '';
+            position: absolute;
+            right: -10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 10px solid rgba(255, 255, 255, 0.1);
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+        }
+
+        .timeline-item:nth-child(even) .timeline-content::after {
+            content: '';
+            position: absolute;
+            left: -10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-right: 10px solid rgba(255, 255, 255, 0.1);
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+        }
+
+        .timeline-date {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--light);
+        }
+
+        .timeline-description {
+            color: var(--gray);
+            line-height: 1.6;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 50%;
+            top: 2rem;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 20px;
+            background: var(--accent);
+            border-radius: 50%;
+            border: 4px solid var(--dark);
+            z-index: 10;
+        }
+
+        /* Quote section */
+        .quote-section {
+            background: rgba(6, 255, 165, 0.1);
+            border: 1px solid rgba(6, 255, 165, 0.3);
+            border-radius: 20px;
+            padding: 3rem;
+            text-align: center;
+            margin-bottom: 4rem;
+            position: relative;
+        }
+
+        .quote-icon {
+            font-size: 4rem;
+            color: var(--accent);
+            margin-bottom: 2rem;
+            opacity: 0.7;
+        }
+
+        .quote-text {
+            font-size: 1.5rem;
+            font-style: italic;
+            line-height: 1.6;
+            color: var(--light);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .quote-author {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .gennady-section {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                text-align: center;
+            }
+
+            .gennady-avatar {
+                width: 280px;
+                height: 280px;
+            }
+
+            .gennady-emoji {
+                font-size: 6rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-menu {
+                gap: 1rem;
+            }
+
+            .timeline::before {
+                left: 20px;
+            }
+
+            .timeline-item {
+                width: 100%;
+                left: 0 !important;
+                padding-left: 3rem !important;
+                padding-right: 0 !important;
+                text-align: left !important;
+            }
+
+            .timeline-dot {
+                left: 20px;
+                transform: translateX(-50%);
+            }
+
+            .timeline-content::after {
+                left: -10px !important;
+                right: auto !important;
+                border-right: 10px solid rgba(255, 255, 255, 0.1) !important;
+                border-left: none !important;
+            }
+
+            .gennady-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <header class="header">
+        <nav class="nav-container">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg class="neon-bulb" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
+                                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                                <feMerge>
+                                    <feMergeNode in="coloredBlur"/>
+                                    <feMergeNode in="SourceGraphic"/>
+                                </feMerge>
+                            </filter>
+                            <linearGradient id="neonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#8b45f1;stop-opacity:0.8" />
+                            </linearGradient>
+                        </defs>
+
+                        <path d="M10 20 Q30 10 50 20 T90 25" stroke="#8b45f1" stroke-width="1" fill="none" opacity="0.3">
+                            <animate attributeName="opacity" values="0.3;0.6;0.3" dur="4s" repeatCount="indefinite"/>
+                        </path>
+                        <path d="M15 80 Q35 70 55 75 T85 80" stroke="#6366f1" stroke-width="1" fill="none" opacity="0.4">
+                            <animate attributeName="opacity" values="0.4;0.7;0.4" dur="3s" repeatCount="indefinite"/>
+                        </path>
+
+                        <path d="M35 45 Q35 25 50 25 Q65 25 65 45 Q65 55 60 60 L60 65 L40 65 L40 60 Q35 55 35 45 Z"
+                              fill="none" stroke="white" stroke-width="2" filter="url(#neonGlow)" opacity="0.9"/>
+
+                        <rect x="40" y="65" width="20" height="8" rx="2"
+                              fill="none" stroke="white" stroke-width="2" filter="url(#neonGlow)" opacity="0.9"/>
+                        <line x1="42" y1="67" x2="58" y2="67" stroke="white" stroke-width="1" opacity="0.7"/>
+                        <line x1="42" y1="70" x2="58" y2="70" stroke="white" stroke-width="1" opacity="0.7"/>
+
+                        <g transform="translate(70, 35)">
+                            <path d="M0,-8 L2,-2 L8,0 L2,2 L0,8 L-2,2 L-8,0 L-2,-2 Z"
+                                  fill="white" opacity="0.8" filter="url(#neonGlow)">
+                                <animateTransform attributeName="transform"
+                                                attributeType="XML"
+                                                type="rotate"
+                                                values="0;360"
+                                                dur="6s"
+                                                repeatCount="indefinite"/>
+                            </path>
+                        </g>
+
+                        <ellipse cx="50" cy="40" rx="12" ry="15" fill="url(#neonGrad)" opacity="0.3">
+                            <animate attributeName="opacity" values="0.3;0.6;0.3" dur="2s" repeatCount="indefinite"/>
+                        </ellipse>
+                    </svg>
+                </div>
+                <div class="logo-text">CreditAI</div>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#" class="nav-link active">О нас</a></li>
+                <li><a href="#" class="nav-link">Полезные советы</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <a href="#" class="back-btn" onclick="history.back()">
+            ← Вернуться к анализу
+        </a>
+
+        <section class="hero">
+            <h1 class="hero-title">Знакомьтесь: ИИ-Геннадий 🤖</h1>
+            <p class="hero-subtitle">Самый продвинутый AI-аналитик в сфере кредитного скоринга. Миллионы расчётов за секунды, но с человеческим подходом!</p>
+        </section>
+
+        <section class="gennady-section">
+            <div class="gennady-image">
+                <div class="gennady-avatar">
+    <img src="{{ url_for('static', filename='image/robot.png') }}" alt="AI Robot" class="robot-image">
+</div>
+
+                <div class="gennady-status">
+                    🟢 Онлайн 24/7 • Анализирую данные...
+                </div>
+            </div>
+
+<div class="gennady-info">
+    <h2 class="gennady-name">ИИ-Геннадий</h2>
+    <p class="gennady-title">Главный AI-аналитик по кредитному скорингу</p>
+    <p class="gennady-description">
+        Привет! Я Геннадий — искусственный интеллект, созданный для оценки кредитоспособности заемщиков.
+        Моя основа — модель машинного обучения, обученная на открытом датасете Kaggle "Give Me Some Credit".
+        Я анализирую финансовые и демографические показатели, чтобы предсказывать риск невыполнения обязательств.
+        Работаю быстро, точно и всегда готов помочь банкам и кредитным организациям принимать решения на основе данных.
+    </p>
+
+    <div class="gennady-stats">
+        <div class="stat-item">
+            <div class="stat-number">2.1s</div>
+            <div class="stat-label">Время анализа</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">97.3%</div>
+            <div class="stat-label">Точность модели</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">1M+</div>
+            <div class="stat-label">Проанализировано кредитов</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">24/7</div>
+            <div class="stat-label">Доступность</div>
+        </div>
+    </div>
+
+    <p class="gennady-description">
+        Технологии, которые я использую:
+        <ul>
+            <li>Python 3.8+</li>
+            <li>PyTorch — нейронные сети и обучение модели</li>
+            <li>scikit-learn — препроцессинг и метрики</li>
+            <li>pandas, numpy — обработка данных</li>
+            <li>joblib — сохранение масштабаторов и моделей</li>
+        </ul>
+        Моя миссия — сделать кредитный скоринг честным, быстрым и понятным для всех участников рынка.
+    </p>
+</div>
+
+        </section>
+
+        <section class="features-section">
+            <h2 class="section-title">Мои суперспособности 🚀</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="feature-icon">🧠</span>
+                    <h3 class="feature-title">Глубокое обучение</h3>
+                    <p class="feature-description">
+                        Использую нейронные сети для анализа сложных паттернов в кредитных данных.
+                        Постоянно учусь и совершенствуюсь!
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <span class="feature-icon">⚡</span>
+                    <h3 class="feature-title">Молниеносная скорость</h3>
+                    <p class="feature-description">
+                        Анализирую тысячи параметров за 2.1 секунды. То, что банку требует дни,
+                        я делаю мгновенно!
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <span class="feature-icon">🎯</span>
+                    <h3 class="feature-title">Высокая точность</h3>
+                    <p class="feature-description">
+                        97.3% точность прогнозирования благодаря обучению на миллионах
+                        реальных кредитных историй.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <span class="feature-icon">🔒</span>
+                    <h3 class="feature-title">Безопасность данных</h3>
+                    <p class="feature-description">
+                        Все данные обрабатываются локально с применением современных
+                        методов шифрования и защиты.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <span class="feature-icon">📊</span>
+                    <h3 class="feature-title">Комплексный анализ</h3>
+                    <p class="feature-description">
+                        Учитываю не только финансовые показатели, но и социальные факторы
+                        для максимально точной оценки.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <span class="feature-icon">🌟</span>
+                    <h3 class="feature-title">Персональный подход</h3>
+                    <p class="feature-description">
+                        Каждый случай уникален! Адаптирую анализ под индивидуальные
+                        особенности каждого заёмщика.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+<section class="timeline-section">
+    <h2 class="section-title">Как пользоваться ИИ-Геннадием 🤖</h2>
+    <div class="timeline">
+        <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+                <div class="timeline-date">Шаг 1</div>
+                <h3 class="timeline-title">Регистрация и авторизация</h3>
+                <p class="timeline-description">
+                    Создайте аккаунт на платформе CreditAI или войдите через корпоративные учетные данные.
+                    Это позволит вам безопасно взаимодействовать с ИИ и сохранять историю анализов.
+                </p>
+            </div>
+        </div>
+
+        <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+                <div class="timeline-date">Шаг 2</div>
+                <h3 class="timeline-title">Ввод данных заемщика</h3>
+                <p class="timeline-description">
+                    Введите финансовые и демографические данные клиента в форму.
+                    Чем точнее данные, тем более корректный прогноз предоставит ИИ-Геннадий.
+                </p>
+            </div>
+        </div>
+
+        <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+                <div class="timeline-date">Шаг 3</div>
+                <h3 class="timeline-title">Анализ кредитоспособности</h3>
+                <p class="timeline-description">
+                    ИИ-Геннадий обрабатывает введённые данные, используя нейронные сети и модели машинного обучения,
+                    и готовит отчёт с вероятностью невыполнения обязательств и рекомендациями.
+                </p>
+            </div>
+        </div>
+
+        <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+                <div class="timeline-date">Шаг 4</div>
+                <h3 class="timeline-title">Просмотр и интерпретация отчета</h3>
+                <p class="timeline-description">
+                    Получите детализированный отчёт с визуализацией рисков, оценкой вероятности дефолта
+                    и рекомендациями по принятию решения о выдаче кредита.
+                </p>
+            </div>
+        </div>
+
+        <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+                <div class="timeline-date">Шаг 5</div>
+                <h3 class="timeline-title">Сохранение и повторное использование</h3>
+                <p class="timeline-description">
+                    Сохраняйте результаты анализа в личном кабинете, чтобы отслеживать историю и использовать данные
+                    для будущих кредитных решений.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+        <section class="quote-section">
+            <div class="quote-icon">"</div>
+            <p class="quote-text">
+                Моя цель - не просто выдать цифру, а помочь каждому человеку понять свои финансовые возможности
+                и найти путь к улучшению кредитной истории. Финансы должны быть понятными и доступными для всех!
+            </p>
+            <div class="quote-author">— ИИ-Геннадий, CreditAI</div>
+        </section>
+    </div>
+
+    <script>
+        // Add some interactive elements
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate stats on scroll
+            const observerOptions = {
+                threshold: 0.5,
+                rootMargin: '0px 0px -100px 0px'
+            };
+
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animation = 'countUp 2s ease-out forwards';
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.stat-number').forEach(stat => {
+                observer.observe(stat);
+            });
+
+            // Add hover effect to timeline items
+            document.querySelectorAll('.timeline-item').forEach(item => {
+                item.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.02)';
+                    this.style.transition = 'transform 0.3s ease';
+                });
+
+                item.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                });
+            });
+
+            // Animate Gennady's status
+            const statusMessages = [
+                '🟢 Онлайн 24/7 • Анализирую данные...',
+                '🧠 Обрабатываю 1000+ параметров...',
+                '⚡ Готов к новому анализу!',
+                '🎯 Точность 97.3% и растёт!',
+                '🚀 Помогаю улучшить кредитный рейтинг!',
+                '💡 Изучаю новые паттерны...'
+            ];
+
+            let statusIndex = 0;
+            const statusElement = document.querySelector('.gennady-status');
+
+            setInterval(() => {
+                statusElement.style.opacity = '0';
+                setTimeout(() => {
+                    statusElement.textContent = statusMessages[statusIndex];
+                    statusElement.style.opacity = '1';
+                    statusIndex = (statusIndex + 1) % statusMessages.length;
+                }, 300);
+            }, 4000);
+        });
+
+        // Add CSS animation for counting effect
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes countUp {
+                from {
+                    transform: scale(0.8);
+                    opacity: 0;
+                }
+                to {
+                    transform: scale(1);
+                    opacity: 1;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97d09e79425be94c',t:'MTc1NzUyNTA2Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

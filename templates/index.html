@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+
+{% block title %}Credit AI - Кредитный скоринг 🔥{% endblock %}
+
+{% block content %}
+<style>
+:root{ --bg:#0b1020; --card:#111735; --card-2:#0e1430; --soft:#1a2147; --accent:#7c9cff; --accent-2:#30e0a1; --text:#eaf0ff; --muted:#9aa3c8; --danger:#ff6b6b; --warning:#ffcc66; --success:#37d29b; --radius:16px; --r-sm:12px; --shadow:0 12px 36px rgba(0,0,0,.28); --shadow-soft:0 8px 22px rgba(0,0,0,.2); --gap:22px; --gap-lg:32px; } html,body{ background: radial-gradient(1100px 900px at 80% -200px, rgba(124,156,255,.16), transparent 60%), radial-gradient(900px 900px at -220px 30%, rgba(48,224,161,.14), transparent 60%), var(--bg); color:var(--text); font-family: Inter, Roboto, "Helvetica Neue", Arial, sans-serif; } .container{ max-width:1200px; margin:0 auto; padding:28px 20px 72px; } .hero{ background:linear-gradient(180deg, rgba(124,156,255,.12), rgba(124,156,255,0)); border:1px solid rgba(124,156,255,.18); border-radius:calc(var(--radius) + 4px); padding:38px 28px; text-align:center; box-shadow:var(--shadow-soft); margin-bottom:var(--gap-lg); position:relative; overflow:hidden; } .hero::after{ content:""; position:absolute; inset:0; background: radial-gradient(600px 200px at 50% -60px, rgba(48,224,161,.12), transparent 70%); } .hero-title{ font-size: clamp(30px, 4.4vw, 46px); line-height:1.08; margin:0 0 10px; } .hero-subtitle{ color:var(--muted); font-size:clamp(14px,1.8vw,18px); margin:0 0 18px; } .hero-badges{ display:flex; flex-wrap:wrap; gap:10px; justify-content:center; } .badge{ background: linear-gradient(180deg, var(--soft), rgba(18,24,51,.86)); border:1px solid rgba(255,255,255,.08); padding:9px 12px; border-radius:12px; font-size:13px; } .stats-section{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; margin-bottom:var(--gap-lg); } .stat-card{ background:var(--card); border:1px solid rgba(255,255,255,.08); border-radius:var(--radius); padding:18px 16px; text-align:center; box-shadow:var(--shadow-soft); transition: transform .15s ease, box-shadow .15s ease; } .stat-card:hover{ transform: translateY(-2px); box-shadow:0 14px 34px rgba(0,0,0,.28); } .stat-number{ font-size: clamp(18px, 2.8vw, 28px); font-weight:800; } .stat-label{ margin-top:6px; color:var(--muted); font-size:13px; } .main-content{ display:grid; grid-template-columns:1.1fr .9fr; grid-template-areas:"features form" "robot form"; grid-template-rows:auto 1fr; gap:var(--gap); align-items:stretch; } .features-section{ grid-area:features; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:var(--gap); } .feature-card{ background:linear-gradient(180deg, var(--card), rgba(18,24,51,.86)); border:1px solid rgba(255,255,255,.08); border-radius:var(--radius); padding:18px 16px; display:grid; grid-template-columns:auto 1fr; grid-template-areas:"icon title" "icon desc"; column-gap:14px; row-gap:6px; transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease; } .feature-card:hover{ transform: translateY(-3px); border-color: rgba(124,156,255,.28); box-shadow:0 16px 36px rgba(0,0,0,.3); } .feature-icon{ grid-area:icon; font-size:26px; } .feature-title{ grid-area:title; font-weight:800; font-size:16px; } .feature-desc{ grid-area:desc; color:var(--muted); font-size:13px; } .robot-section{ grid-area:robot; display: flex; flex-direction: column; height: 100%; } .robot-container{ flex: 1; display: grid; grid-template-rows: 2fr 1fr; /* 2/3 робот, 1/3 текст */ row-gap: 6px; background:linear-gradient(180deg, var(--card), rgba(18,24,51,.86)); border:1px solid rgba(255,255,255,.08); border-radius:var(--radius); padding:18px; box-shadow:var(--shadow); } .robot-image{ width: 100%; height: 400px; object-fit: contain; justify-self: center; align-self: center; margin:0; display:block; align-self:end; } .speech-text{ background: linear-gradient(180deg, #182050, #141a3c); border:1px solid rgba(124,156,255,.28); color:#eaf0ff; padding:10px 10px; border-radius:5px; box-shadow:var(--shadow-soft); font-size:18px; line-height:1.45; overflow-y:auto; max-height: 100px; place-self:end stretch; } .form-section{ grid-area:form; position:sticky; top:24px; align-self:start; background:linear-gradient(180deg, var(--card), rgba(18,24,51,.9)); border:1px solid rgba(255,255,255,.12); border-radius:calc(var(--radius) + 2px); box-shadow:var(--shadow); padding:18px; } .form-header{ display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:10px; } .form-title{ font-size:20px; font-weight:900; margin:0; } .form-note{ color:var(--muted); font-size:13px; margin-bottom:12px; } .input-block-grid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px 12px; align-items:start; padding:12px 14px 16px; } .form-group{ display:grid; grid-template-rows: 36px auto; gap:6px; } .form-label{ font-size:13px; color:#dfe6ff; line-height:18px; min-height:36px; } .hint{ color:var(--muted); font-size:11px; } .number-field{ display:grid; grid-template-columns:32px 1fr 32px; align-items:center; gap:6px; background:#0f1430; border:1px solid rgba(255,255,255,.1); border-radius:12px; padding:6px; height:44px; } .step{ height:32px; border:none; border-radius:10px; background:#141a3b; color:#eaf0ff; cursor:pointer; font-weight:800; transition: transform .06s ease, background .12s ease; } .step:hover{ background:#17204a; transform:translateY(-1px); } .step:active{ transform:translateY(0); } .form-input{ width:100%; background:transparent; color:#fff; border:none; outline:none; font-size:14px; padding:8px 6px; text-align:left; } .submit-btn{ width:100%; background: linear-gradient(180deg, var(--accent), #5d7efc); color:#0b0f24; border:none; border-radius:12px; padding:12px 14px; font-weight:900; font-size:15px; cursor:pointer; box-shadow:0 12px 26px rgba(124,156,255,.35); transition: transform .06s ease, filter .12s ease; } .submit-btn:hover{ transform: translateY(-1px); filter:brightness(1.03); } .submit-btn:disabled{ opacity:.7; cursor:not-allowed; } @media (max-width:1024px){ .main-content{ grid-template-columns:1fr; grid-template-areas:"features" "robot" "form"; } .form-section{ position:static; } .features-section{ grid-template-columns:1fr; } .input-block-grid{ grid-template-columns:1fr; } }
+/* Убираем стрелки у input number */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {-webkit-appearance:none;margin:0;}
+input[type=number]{-moz-appearance:textfield;}
+
+/* Убираем стрелку у details */
+details summary::-webkit-details-marker {display:none;}
+details summary::marker {content:'';}
+</style>
+<div class="container">
+  <section class="hero">
+    <h1 class="hero-title">AI Credit Scoring 🚀</h1>
+    <p class="hero-subtitle">Нейросетевой анализ кредитоспособности нового поколения</p>
+    <div class="hero-badges">
+      <span class="badge">🔥 Точность 97.3%</span>
+      <span class="badge">⚡ Анализ за 2 сек</span>
+      <span class="badge">🛡️ Безопасно</span>
+      <span class="badge">🎯 ML-алгоритмы</span>
+    </div>
+  </section>
+
+  <section class="stats-section">
+    <div class="stat-card">
+      <div class="stat-number">1 000 000+</div>
+      <div class="stat-label">Анализов проведено</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">97.3%</div>
+      <div class="stat-label">Точность прогноза</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">2.1s</div>
+      <div class="stat-label">Среднее время</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">24/7</div>
+      <div class="stat-label">Доступность</div>
+    </div>
+  </section>
+
+  <section class="main-content">
+    <div class="features-section">
+      <div class="feature-card">
+        <div class="feature-icon">🧠</div>
+        <div class="feature-title">Нейронные сети</div>
+        <div class="feature-desc">Глубокое обучение на миллионах кредитных историй</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <div class="feature-title">Мгновенный анализ</div>
+        <div class="feature-desc">Результат за секунды, а не дни</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎯</div>
+        <div class="feature-title">Высокая точность</div>
+        <div class="feature-desc">97.3% точность прогнозирования</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <div class="feature-title">Безопасность</div>
+        <div class="feature-desc">Шифрование и защита данных</div>
+      </div>
+    </div>
+
+    <div class="robot-section" id="robotSection">
+      <div class="robot-container">
+        <img src="{{ url_for('static', filename='image/robot.png') }}" alt="AI Robot" class="robot-image">
+        <div class="speech-text" id="robotSpeech">
+          {{ (robot_text or "Привет! Я Геннадий, ваш AI-помощник по кредитному скорингу")|replace('\n','<br>')|safe }}
+          <span class="cursor">▌</span>
+        </div>
+      </div>
+      {% if tts_url %}
+        <audio id="ttsPlayer" src="{{ tts_url }}" autoplay></audio>
+      {% endif %}
+    </div>
+
+    <div class="form-section">
+      <div class="form-header">
+        <h2 class="form-title">🚀 Запустить анализ</h2>
+      </div>
+      <div class="form-note">Заполните поля ниже. Числа — без лишних символов. Кнопки ± работают локально.</div>
+
+      <form id="creditForm" method="post" action="{{ url_for('index') }}" novalidate>
+        {% set total = forms_label|length %}
+        {% set blocks = (total // 6) + (1 if total % 6 != 0 else 0) %}
+        {% for b in range(blocks) %}
+          {% set start = b * 6 %}
+          {% set end = (start + 6) if (start + 6) < total else total %}
+          <details class="input-block" data-block-index="{{ b }}" open>
+            <summary class="input-block-header">
+              <div class="block-title">Блок {{ b + 1 }}</div>
+            </summary>
+            <div class="input-block-grid">
+              {% for i in range(start, end) %}
+                {% set name = feature_keys[i] %}
+                <div class="form-group">
+                  <label class="form-label" for="{{ name }}" title="{{ name }}">{{ forms_label[i] }}</label>
+                  <div class="number-field" data-field>
+  <button type="button" class="step" onclick="this.nextElementSibling.stepDown()">-</button>
+                    <input
+                      class="form-input"
+                      id="{{ name }}"
+                      name="{{ name }}"
+                      type="number"
+                      inputmode="decimal"
+                      step="any"
+                      placeholder="Введите значение"
+                      value="{{ values.get(name) if values is defined else '' }}"
+                      {% if values is defined and values.get(name) is not none %} aria-valuetext="{{ values.get(name) }}"{% endif %}
+                      required
+                    >
+  <button type="button" class="step" onclick="this.previousElementSibling.stepUp()">+</button>
+                  </div>
+                  <div class="hint"></div>
+                </div>
+              {% endfor %}
+            </div>
+          </details>
+        {% endfor %}
+
+        <button type="submit" class="submit-btn" id="submitBtn">
+          <span class="btn-label">🚀 Запустить AI-анализ</span>
+        </button>
+      </form>
+    </div>
+  </section>
+</div>
+
+<div id="toast" class="toast" aria-hidden="true"></div>
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.number-field').forEach(field => {
+    const input = field.querySelector('input[type="number"]');
+    const btnMinus = field.querySelector('button:first-child');
+    const btnPlus = field.querySelector('button:last-child');
+
+    btnMinus.addEventListener('click', () => {
+      let val = parseInt(input.value) || 0;
+      input.value = val - 1;
+      input.dispatchEvent(new Event('input'));
+    });
+
+    btnPlus.addEventListener('click', () => {
+      let val = parseInt(input.value) || 0;
+      input.value = val + 1;
+      input.dispatchEvent(new Event('input'));
+    });
+  });
+
+  const form = document.getElementById('creditForm');
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+
+    const formData = new FormData(form);
+    const response = await fetch(form.action, { method:'POST', body: formData });
+    if (!response.ok) { btn.disabled=false; alert('Ошибка сервера'); return; }
+    const html = await response.text();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+    const newRobot = doc.getElementById('robotSection');
+    const oldRobot = document.getElementById('robotSection');
+    if(newRobot && oldRobot) oldRobot.innerHTML = newRobot.innerHTML;
+
+    btn.disabled = false;
+  });
+});
+</script>
+
+{% endblock %}
