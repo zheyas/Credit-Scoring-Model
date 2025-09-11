@@ -31,7 +31,7 @@
 
 1. Клонировать репозиторий:
 ```
-git clone <URL-репозитория>
+git clone https://github.com/zheyas/Credit-Scoring-Model
 cd credit-scoring
 ```
 
@@ -103,4 +103,4 @@ python app.py
 ## Контакты
 
 Email: uskat2@yandex.ru  
-GitHub: https://github.com/zheyas)
+GitHub: https://github.com/zheyas
