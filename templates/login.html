@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Вход в систему{% endblock %}
+{% block content %}
+<div class="container">
+    <h2 class="page-title">Вход в систему</h2>
+    <p class="page-subtitle">Используйте учетную запись сотрудника банка. Для демонстрации доступен администратор: admin / admin123.</p>
+
+    <form method="post" class="scoring-form">
+        <fieldset>
+            <legend>Учетная запись</legend>
+            <div class="form-group">
+                <label>Логин</label>
+                <input type="text" name="username" required value="{{ username }}" autocomplete="username">
+            </div>
+            <div class="form-group">
+                <label>Пароль</label>
+                <input type="password" name="password" required autocomplete="current-password">
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">Войти</button>
+                <a href="/register" class="btn-secondary">Создать аккаунт</a>
+            </div>
+        </fieldset>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}{{ config.title }} | Администрирование{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <strong>Модели</strong>
+            {% for key, item in admin_models.items() %}
+            <a href="/admin/{{ key }}">{{ item.title }}</a>
+            {% endfor %}
+        </aside>
+
+        <section>
+            <h2 class="page-title">{{ config.title }}</h2>
+            <div class="admin-toolbar">
+                <form method="get" class="search-form">
+                    <input type="search" name="q" placeholder="Поиск" value="{{ query }}">
+                    <button type="submit" class="btn-secondary btn-small">Найти</button>
+                </form>
+                <div>
+                    <a href="/admin" class="btn-secondary btn-small">К списку моделей</a>
+                    {% if config.can_add %}
+                    <a href="/admin/{{ model_name }}/add" class="btn-primary btn-small">Добавить</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="table-wrap">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            {% for _, label in config.list_columns %}
+                            <th>{{ label }}</th>
+                            {% endfor %}
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in rows %}
+                        <tr>
+                            {% for key, _ in config.list_columns %}
+                            <td>
+                                {% if key == 'is_active' %}
+                                    {% if row[key] %}Да{% else %}Нет{% endif %}
+                                {% elif key == 'role' %}
+                                    {{ role_labels.get(row[key], row[key]) }}
+                                {% elif key == 'status' %}
+                                    {{ status_labels.get(row[key], row[key]) if status_labels is defined else row[key] }}
+                                {% elif key == 'product_type' %}
+                                    {{ product_names.get(row[key], row[key]) if product_names is defined else row[key] }}
+                                {% elif key == 'risk_probability' %}
+                                    {{ "%.2f"|format(row[key] * 100) }}%
+                                {% elif row[key] is number and key.endswith('amount') %}
+                                    {{ "{:,.0f}".format(row[key]) }} ₽
+                                {% else %}
+                                    {{ row[key] }}
+                                {% endif %}
+                            </td>
+                            {% endfor %}
+                            <td>
+                                {% if config.can_edit %}
+                                <a href="/admin/{{ model_name }}/{{ row.id }}/edit">Изменить</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="{{ config.list_columns|length + 1 }}">Записей нет.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}

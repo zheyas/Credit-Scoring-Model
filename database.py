@@ -189,6 +189,7 @@ def create_application(
     prediction,
     offer,
     features: Iterable[tuple[str, str, float]],
+    user_id: int | None = None,
 ):
     created_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     with get_connection() as conn:
@@ -228,27 +229,34 @@ def create_application(
         conn.execute(
             """
             INSERT INTO audit_log (user_id, action, entity_type, entity_id)
-            VALUES ((SELECT id FROM users WHERE username = 'manager'), ?, ?, ?)
+            VALUES (?, ?, ?, ?)
             """,
-            ("create_application", "applications", application_id),
+            (user_id, "create_application", "applications", application_id),
         )
         return application_id
 
 
-def list_applications(limit=100):
+def list_applications(limit=100, employee_id=None):
     with get_connection() as conn:
+        where = ""
+        params = []
+        if employee_id:
+            where = "WHERE a.employee_id = ?"
+            params.append(employee_id)
+        params.append(limit)
         return conn.execute(
-            """
+            f"""
             SELECT
                 a.*, b.full_name, b.email, b.phone,
                 e.full_name AS employee_name
             FROM applications a
             JOIN borrowers b ON b.id = a.borrower_id
             LEFT JOIN employees e ON e.id = a.employee_id
+            {where}
             ORDER BY a.created_at DESC, a.id DESC
             LIMIT ?
             """,
-            (limit,),
+            params,
         ).fetchall()
 
 
@@ -301,6 +309,81 @@ def list_employees():
             ORDER BY d.name, e.full_name
             """
         ).fetchall()
+
+
+def list_users():
+    with get_connection() as conn:
+        return conn.execute(
+            """
+            SELECT u.*, e.full_name AS employee_name, d.name AS department_name
+            FROM users u
+            LEFT JOIN employees e ON e.id = u.employee_id
+            LEFT JOIN departments d ON d.id = e.department_id
+            ORDER BY u.role, u.username
+            """
+        ).fetchall()
+
+
+def get_user_by_username(username):
+    with get_connection() as conn:
+        return conn.execute(
+            """
+            SELECT u.*, e.full_name AS employee_name, e.department_id,
+                   e.position, d.name AS department_name
+            FROM users u
+            LEFT JOIN employees e ON e.id = u.employee_id
+            LEFT JOIN departments d ON d.id = e.department_id
+            WHERE u.username = ?
+            """,
+            (username,),
+        ).fetchone()
+
+
+def get_user_by_id(user_id):
+    with get_connection() as conn:
+        return conn.execute(
+            """
+            SELECT u.*, e.full_name AS employee_name, e.department_id,
+                   e.position, e.email, d.name AS department_name
+            FROM users u
+            LEFT JOIN employees e ON e.id = u.employee_id
+            LEFT JOIN departments d ON d.id = e.department_id
+            WHERE u.id = ?
+            """,
+            (user_id,),
+        ).fetchone()
+
+
+def create_employee_account(form_data):
+    with get_connection() as conn:
+        employee_cursor = conn.execute(
+            """
+            INSERT INTO employees
+                (department_id, full_name, position, email, phone)
+            VALUES (?, ?, ?, ?, ?)
+            """,
+            (
+                form_data["department_id"],
+                form_data["full_name"],
+                form_data["position"],
+                form_data["email"],
+                form_data.get("phone", ""),
+            ),
+        )
+        employee_id = employee_cursor.lastrowid
+        user_cursor = conn.execute(
+            """
+            INSERT INTO users (employee_id, username, password_hash, role)
+            VALUES (?, ?, ?, ?)
+            """,
+            (
+                employee_id,
+                form_data["username"],
+                generate_password_hash(form_data["password"]),
+                form_data["role"],
+            ),
+        )
+        return user_cursor.lastrowid
 
 
 def get_default_employee_id():

@@ -34,6 +34,8 @@
         .btn-primary:hover { background: var(--primary-hover); }
         .btn-secondary { background: var(--card); color: var(--text); border: 1px solid var(--border); }
         .btn-secondary:hover { background: var(--bg); }
+        .btn-small { padding: 0.45rem 0.75rem; font-size: 0.9rem; }
+        .nav-user { color: var(--text-muted); font-size: 0.9rem; }
         fieldset { border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1.5rem; background: var(--card); }
         legend { font-weight: 600; padding: 0 0.5rem; }
         .form-group { margin-bottom: 1rem; }
@@ -65,6 +67,9 @@
         .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
         .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
         .alert { border: 1px solid #fecaca; background: #fef2f2; color: #991b1b; padding: 1rem; border-radius: var(--radius); margin-bottom: 1rem; }
+        .alert.success { border-color: #bbf7d0; background: #f0fdf4; color: #166534; }
+        .alert.warning { border-color: #fde68a; background: #fffbeb; color: #92400e; }
+        .alert.danger { border-color: #fecaca; background: #fef2f2; color: #991b1b; }
         .muted { color: var(--text-muted); }
         .table-wrap { overflow-x: auto; }
         .metric { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; box-shadow: var(--shadow); }
@@ -73,11 +78,22 @@
         .detail-list { display: grid; grid-template-columns: 220px 1fr; gap: 0.75rem 1rem; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; }
         .detail-list dt { color: var(--text-muted); }
         .detail-list dd { font-weight: 600; }
+        .admin-layout { display: grid; grid-template-columns: 240px 1fr; gap: 1.5rem; align-items: start; }
+        .admin-sidebar { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1rem; }
+        .admin-sidebar a { display: block; color: var(--text); text-decoration: none; padding: 0.55rem 0.65rem; border-radius: 6px; }
+        .admin-sidebar a:hover { background: #f1f5f9; color: var(--primary); }
+        .admin-toolbar { display: flex; gap: 0.75rem; justify-content: space-between; align-items: center; margin: 1rem 0; flex-wrap: wrap; }
+        .search-form { display: flex; gap: 0.5rem; }
+        .search-form input { min-width: 260px; padding: 0.65rem; border: 1px solid var(--border); border-radius: 8px; }
+        .form-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
         @media (max-width: 760px) {
             .header-inner { align-items: flex-start; flex-direction: column; gap: 1rem; }
             nav { justify-content: flex-start; }
             .grid-2, .grid-3 { grid-template-columns: 1fr; }
             .detail-list { grid-template-columns: 1fr; }
+            .admin-layout { grid-template-columns: 1fr; }
+            .search-form { width: 100%; }
+            .search-form input { min-width: 0; width: 100%; }
         }
     </style>
 </head>
@@ -86,15 +102,35 @@
         <div class="header-inner">
             <a href="/" class="logo">🔥 CreditAI</a>
             <nav>
+                {% if current_user %}
+                <span class="nav-user">{{ current_user.username }} · {{ role_labels.get(current_user.role, current_user.role) }}</span>
+                <a href="/dashboard">Кабинет</a>
+                <a href="/profile">Профиль</a>
                 <a href="/apply">Подать заявку</a>
                 <a href="/history">История</a>
+                {% if current_user.role == 'admin' %}
                 <a href="/admin">Администрирование</a>
+                {% endif %}
+                <a href="/logout">Выход</a>
+                {% else %}
+                <a href="/login">Вход</a>
+                <a href="/register">Регистрация</a>
+                {% endif %}
                 <a href="/about">О нас</a>
                 <a href="/faq">FAQ</a>
             </nav>
         </div>
     </header>
     <main>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="container" style="padding-bottom: 0;">
+                {% for category, message in messages %}
+                <div class="alert {{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        {% endwith %}
         {% block content %}{% endblock %}
     </main>
     {% block scripts %}{% endblock %}

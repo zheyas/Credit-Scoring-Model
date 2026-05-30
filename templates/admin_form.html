@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}{% if mode == 'add' %}Добавление{% else %}Изменение{% endif %} | {{ config.title }}{% endblock %}
+{% block content %}
+<div class="container">
+    <h2 class="page-title">{% if mode == 'add' %}Добавить{% else %}Изменить{% endif %}: {{ config.title }}</h2>
+    {% if error %}
+    <div class="alert danger">{{ error }}</div>
+    {% endif %}
+
+    <form method="post">
+        <fieldset>
+            <legend>Поля записи</legend>
+            <div class="grid-2">
+                {% for field in config.fields %}
+                <div class="form-group">
+                    <label>{{ field.label }}</label>
+                    {% set value = row.get(field.name, '') if row.get is defined else row[field.name] %}
+                    {% if field.type in ['department', 'employee', 'role', 'status', 'product', 'employment', 'risk', 'boolean'] %}
+                    <select name="{{ field.name }}" {% if field.required %}required{% endif %}>
+                        {% for key, label in admin_choices(field.type) %}
+                        <option value="{{ key }}" {% if value|string == key|string %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                    {% elif field.type == 'textarea' %}
+                    <textarea name="{{ field.name }}" rows="5" style="width:100%;padding:0.75rem;border:1px solid var(--border);border-radius:8px;">{{ value }}</textarea>
+                    {% elif field.type == 'password' %}
+                    <input type="password" name="{{ field.name }}" {% if mode == 'add' %}required{% endif %} autocomplete="new-password">
+                    {% else %}
+                    <input type="{{ field.type }}" name="{{ field.name }}" value="{{ value }}" {% if field.required %}required{% endif %}>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">Сохранить</button>
+                <a href="/admin/{{ model_name }}" class="btn-secondary">Отмена</a>
+            </div>
+        </fieldset>
+    </form>
+</div>
+{% endblock %}

@@ -9,3 +9,5 @@ model/credit_model.pt
 model/scaler.pkl
 data/GiveMeSomeCredit-testing.csv
 data/GiveMeSomeCredit-training.csv
+
+.DS_Store

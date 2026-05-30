@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Личный кабинет{% endblock %}
+{% block content %}
+<div class="container">
+    <h2 class="page-title">Личный кабинет</h2>
+    <p class="page-subtitle">
+        {{ current_user.employee_name or current_user.username }} · {{ role_labels.get(current_user.role, current_user.role) }}
+        {% if current_user.department_name %} · {{ current_user.department_name }}{% endif %}
+    </p>
+
+    <section class="grid-3">
+        <div class="metric">
+            <div class="muted">Все заявки в системе</div>
+            <div class="metric-value">{{ stats.total_applications }}</div>
+        </div>
+        <div class="metric">
+            <div class="muted">Одобрено</div>
+            <div class="metric-value">{{ stats.approved_applications }}</div>
+        </div>
+        <div class="metric">
+            <div class="muted">Средняя PD</div>
+            <div class="metric-value">{{ "%.2f"|format(stats.avg_pd * 100) }}%</div>
+        </div>
+    </section>
+
+    <div class="actions">
+        <a href="/apply" class="btn-primary">Новая заявка</a>
+        <a href="/history" class="btn-secondary">История заявок</a>
+        {% if current_user.role == 'admin' %}
+        <a href="/admin" class="btn-secondary">Администрирование</a>
+        {% endif %}
+    </div>
+
+    <section class="section">
+        <h3>Мои последние заявки</h3>
+        {% if applications %}
+        <div class="table-wrap">
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Дата</th>
+                        <th>Заемщик</th>
+                        <th>Продукт</th>
+                        <th>PD</th>
+                        <th>Риск</th>
+                        <th>Статус</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for app in applications %}
+                    <tr>
+                        <td>{{ app.created_at }}</td>
+                        <td>{{ app.full_name }}</td>
+                        <td>{{ product_names.get(app.product_type, app.product_type) }}</td>
+                        <td>{{ "%.2f"|format(app.risk_probability * 100) }}%</td>
+                        <td><span class="badge {{ app.risk_level|lower }}">{{ app.risk_level }}</span></td>
+                        <td><span class="status {{ app.status }}">{{ status_labels.get(app.status, app.status) }}</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">У вас пока нет заявок.</div>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

@@ -4,7 +4,7 @@
 <div class="container">
     <h2 class="page-title">Администрирование</h2>
     <p class="page-subtitle">
-        Справочники и контрольные показатели информационной системы кредитного скоринга.
+        Панель управления построена по логике Django admin: модели, списки записей, поиск, добавление и редактирование.
     </p>
 
     <section class="grid-3">
@@ -19,6 +19,24 @@
         <div class="metric">
             <div class="muted">Средняя PD</div>
             <div class="metric-value">{{ "%.2f"|format(stats.avg_pd * 100) }}%</div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h3>Модели системы</h3>
+        <div class="grid-3">
+            {% for key, model in admin_models.items() %}
+            <div class="metric">
+                <div class="muted">{{ model.table }}</div>
+                <div style="font-weight: 700; margin: 0.35rem 0 1rem;">{{ model.title }}</div>
+                <div class="form-actions">
+                    <a href="/admin/{{ key }}" class="btn-secondary btn-small">Открыть</a>
+                    {% if model.can_add %}
+                    <a href="/admin/{{ key }}/add" class="btn-primary btn-small">Добавить</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
         </div>
     </section>
 

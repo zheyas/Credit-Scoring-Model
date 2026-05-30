@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Регистрация сотрудника{% endblock %}
+{% block content %}
+<div class="container">
+    <h2 class="page-title">Регистрация сотрудника</h2>
+    <p class="page-subtitle">После регистрации создаются запись сотрудника и связанный пользователь для личного кабинета.</p>
+
+    {% if error %}
+    <div class="alert danger">{{ error }}</div>
+    {% endif %}
+
+    <form method="post" class="scoring-form">
+        <fieldset>
+            <legend>Данные сотрудника</legend>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>ФИО</label>
+                    <input type="text" name="full_name" required value="{{ values.get('full_name', '') }}">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" required value="{{ values.get('email', '') }}">
+                </div>
+                <div class="form-group">
+                    <label>Телефон</label>
+                    <input type="text" name="phone" value="{{ values.get('phone', '') }}">
+                </div>
+                <div class="form-group">
+                    <label>Должность</label>
+                    <input type="text" name="position" required value="{{ values.get('position', 'Кредитный специалист') }}">
+                </div>
+                <div class="form-group">
+                    <label>Отдел</label>
+                    <select name="department_id" required>
+                        {% for department in departments %}
+                        <option value="{{ department.id }}" {% if values.get('department_id') == department.id|string %}selected{% endif %}>{{ department.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Роль</label>
+                    <select name="role" required>
+                        {% for key, label in role_options.items() %}
+                        <option value="{{ key }}" {% if values.get('role') == key %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Доступ</legend>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Логин</label>
+                    <input type="text" name="username" required value="{{ values.get('username', '') }}" autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label>Пароль</label>
+                    <input type="password" name="password" required autocomplete="new-password">
+                </div>
+                <div class="form-group">
+                    <label>Повтор пароля</label>
+                    <input type="password" name="password2" required autocomplete="new-password">
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">Зарегистрироваться</button>
+                <a href="/login" class="btn-secondary">У меня уже есть аккаунт</a>
+            </div>
+        </fieldset>
+    </form>
+</div>
+{% endblock %}

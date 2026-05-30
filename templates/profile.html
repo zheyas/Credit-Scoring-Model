@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Профиль{% endblock %}
+{% block content %}
+<div class="container">
+    <h2 class="page-title">Профиль пользователя</h2>
+    <dl class="detail-list">
+        <dt>Логин</dt>
+        <dd>{{ current_user.username }}</dd>
+        <dt>Роль</dt>
+        <dd>{{ role_labels.get(current_user.role, current_user.role) }}</dd>
+        <dt>ФИО сотрудника</dt>
+        <dd>{{ current_user.employee_name or "Не привязан" }}</dd>
+        <dt>Должность</dt>
+        <dd>{{ current_user.position or "Не указана" }}</dd>
+        <dt>Отдел</dt>
+        <dd>{{ current_user.department_name or "Не указан" }}</dd>
+        <dt>Email</dt>
+        <dd>{{ current_user.email or "Не указан" }}</dd>
+        <dt>Статус</dt>
+        <dd>{% if current_user.is_active %}Активен{% else %}Отключен{% endif %}</dd>
+    </dl>
+
+    <div class="actions">
+        <a href="/dashboard" class="btn-secondary">К кабинету</a>
+        <a href="/logout" class="btn-primary">Выйти</a>
+    </div>
+</div>
+{% endblock %}
