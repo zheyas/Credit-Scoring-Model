@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}История заявок{% endblock %}
+{% block content %}
+<div class="container">
+    <h2 class="page-title">История заявок</h2>
+    <p class="page-subtitle">Журнал заявок хранится в SQLite и показывает результат работы модели, решение и ответственного сотрудника.</p>
+    {% if applications %}
+    <div class="table-wrap">
+    <table class="history-table">
+        <thead>
+            <tr>
+                <th>Дата</th>
+                <th>Заемщик</th>
+                <th>Продукт</th>
+                <th>Запрошено</th>
+                <th>Одобрено</th>
+                <th>Ставка</th>
+                <th>Риск</th>
+                <th>Статус</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for app in applications %}
+            <tr>
+                <td>{{ app.created_at }}</td>
+                <td>{{ app.full_name }}</td>
+                <td>{{ product_names.get(app.product_type, app.product_type) }}</td>
+                <td>{{ "{:,.0f}".format(app.requested_amount) }} ₽</td>
+                <td>{{ "{:,.0f}".format(app.approved_amount) }} ₽</td>
+                <td>{{ "%.1f"|format(app.interest_rate) }}%</td>
+                <td><span class="badge {{ app.risk_level|lower }}">{{ app.risk_level|capitalize }}</span></td>
+                <td><span class="status {{ app.status|lower }}">{{ status_labels.get(app.status, app.status) }}</span></td>
+                <td><a href="/applications/{{ app.id }}">Открыть</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>У вас пока нет заявок.</p>
+        <a href="/apply" class="btn-primary" style="margin-top: 1rem;">Подать первую заявку</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

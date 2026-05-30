@@ -4,6 +4,7 @@ __pycache__/
 .env
 .idea
 reports/
+instance/
 model/credit_model.pt
 model/scaler.pkl
 data/GiveMeSomeCredit-testing.csv

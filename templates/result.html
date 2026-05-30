@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Результат оценки{% endblock %}
+{% block content %}
+<div class="container result-container">
+    <h2 class="page-title">Результат оценки</h2>
+    <div class="cards">
+        <div class="card risk-card risk-{{ result.level|lower }}">
+            <h3>Риск дефолта</h3>
+            <div class="value">{{ "%.2f"|format(result.prob * 100) }}%</div>
+            <p>{{ result.level }} риск</p>
+        </div>
+        <div class="card amount-card">
+            <h3>Одобренная сумма</h3>
+            <div class="value">{{ "{:,.0f}".format(offer.amount) }} ₽</div>
+            <p>Максимальный лимит</p>
+        </div>
+        <div class="card rate-card">
+            <h3>Процентная ставка</h3>
+            <div class="value">{{ "%.1f"|format(offer.rate) }}%</div>
+            <p>Годовых</p>
+        </div>
+    </div>
+
+    <div class="recommendation">
+        <h3>Рекомендуемый продукт</h3>
+        <p><strong>{{ offer.product_name }}</strong></p>
+        <p>Заявка №<code>{{ application_id }}</code> создана. Статус: <strong>{{ status_label }}</strong>.</p>
+        <p class="muted">{{ offer.comment }}</p>
+    </div>
+
+    <div class="actions">
+        <a href="/apply" class="btn-secondary">Подать новую заявку</a>
+        <a href="/applications/{{ application_id }}" class="btn-secondary">Карточка заявки</a>
+        <a href="/history" class="btn-primary">История заявок</a>
+    </div>
+</div>
+{% endblock %}

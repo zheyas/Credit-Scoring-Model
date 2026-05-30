@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Карточка заявки №{{ application.id }}{% endblock %}
+{% block content %}
+<div class="container">
+    <h2 class="page-title">Карточка заявки №{{ application.id }}</h2>
+    <dl class="detail-list">
+        <dt>Дата создания</dt>
+        <dd>{{ application.created_at }}</dd>
+        <dt>Заемщик</dt>
+        <dd>{{ application.full_name }}</dd>
+        <dt>Email</dt>
+        <dd>{{ application.email }}</dd>
+        <dt>Телефон</dt>
+        <dd>{{ application.phone }}</dd>
+        <dt>Ответственный сотрудник</dt>
+        <dd>{{ application.employee_name }}</dd>
+        <dt>Кредитный продукт</dt>
+        <dd>{{ product_names.get(application.product_type, application.product_type) }}</dd>
+        <dt>Запрошенная сумма</dt>
+        <dd>{{ "{:,.0f}".format(application.requested_amount) }} ₽</dd>
+        <dt>Одобренная сумма</dt>
+        <dd>{{ "{:,.0f}".format(application.approved_amount) }} ₽</dd>
+        <dt>Вероятность дефолта</dt>
+        <dd>{{ "%.2f"|format(application.risk_probability * 100) }}%</dd>
+        <dt>Уровень риска</dt>
+        <dd><span class="badge {{ application.risk_level|lower }}">{{ application.risk_level }}</span></dd>
+        <dt>Статус</dt>
+        <dd><span class="status {{ application.status }}">{{ status_label }}</span></dd>
+        <dt>Комментарий решения</dt>
+        <dd>{{ application.decision_comment }}</dd>
+    </dl>
+
+    <section class="section">
+        <h3>Признаки, переданные в модель</h3>
+        <div class="table-wrap">
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Признак</th>
+                        <th>Системное имя</th>
+                        <th>Значение</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for feature in features %}
+                    <tr>
+                        <td>{{ feature.feature_label }}</td>
+                        <td>{{ feature.feature_name }}</td>
+                        <td>{{ feature.value }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <div class="actions">
+        <a href="/history" class="btn-secondary">К истории</a>
+        <a href="/apply" class="btn-primary">Новая заявка</a>
+    </div>
+</div>
+{% endblock %}
