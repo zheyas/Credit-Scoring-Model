@@ -1,89 +1,102 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Credit AI - Кредитный скоринг 🔥{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
     {% block head %}{% endblock %}
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --radius: 8px;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; }
+        .container { max-width: 1120px; margin: 0 auto; padding: 2rem 1rem; }
+        header { background: var(--card); padding: 1rem 0; border-bottom: 1px solid var(--border); box-shadow: var(--shadow); }
+        .header-inner { max-width: 1200px; margin: 0 auto; padding: 0 1rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary); text-decoration: none; }
+        nav { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: flex-end; }
+        nav a { color: var(--text); text-decoration: none; font-weight: 500; }
+        nav a:hover { color: var(--primary); }
+        .btn-primary, .btn-secondary { display: inline-block; padding: 0.75rem 1.5rem; border-radius: var(--radius); font-weight: 500; text-decoration: none; cursor: pointer; border: none; transition: 0.2s; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-hover); }
+        .btn-secondary { background: var(--card); color: var(--text); border: 1px solid var(--border); }
+        .btn-secondary:hover { background: var(--bg); }
+        fieldset { border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1.5rem; background: var(--card); }
+        legend { font-weight: 600; padding: 0 0.5rem; }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; color: var(--text); }
+        .form-group input, .form-group select { width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; transition: border 0.2s; background: #fff; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+        .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+        .card { background: var(--card); padding: 1.5rem; border-radius: var(--radius); box-shadow: var(--shadow); text-align: center; }
+        .card .value { font-size: 2rem; font-weight: 700; margin: 0.5rem 0; }
+        .risk-low { border-top: 4px solid var(--success); }
+        .risk-medium { border-top: 4px solid var(--warning); }
+        .risk-high { border-top: 4px solid var(--danger); }
+        .history-table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+        .history-table th, .history-table td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border); }
+        .history-table th { background: #f1f5f9; font-weight: 600; }
+        .badge { padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.85rem; font-weight: 500; }
+        .badge.низкий { background: #dcfce7; color: #166534; }
+        .badge.средний { background: #fef3c7; color: #92400e; }
+        .badge.высокий { background: #fee2e2; color: #991b1b; }
+        .status { font-weight: 500; }
+        .status.pending { color: #d97706; }
+        .status.approved { color: var(--success); }
+        .status.rejected { color: var(--danger); }
+        .actions { display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap; }
+        .empty-state { text-align: center; padding: 3rem; color: var(--text-muted); background: var(--card); border-radius: var(--radius); }
+        .recommendation { background: #eff6ff; border: 1px solid #bfdbfe; padding: 1.5rem; border-radius: var(--radius); margin-top: 1.5rem; }
+        .page-title { margin-bottom: 1rem; }
+        .page-subtitle { color: var(--text-muted); margin-bottom: 1.5rem; max-width: 760px; }
+        .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+        .alert { border: 1px solid #fecaca; background: #fef2f2; color: #991b1b; padding: 1rem; border-radius: var(--radius); margin-bottom: 1rem; }
+        .muted { color: var(--text-muted); }
+        .table-wrap { overflow-x: auto; }
+        .metric { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; box-shadow: var(--shadow); }
+        .metric-value { font-size: 1.75rem; font-weight: 800; margin-top: 0.25rem; }
+        .section { margin-top: 2rem; }
+        .detail-list { display: grid; grid-template-columns: 220px 1fr; gap: 0.75rem 1rem; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; }
+        .detail-list dt { color: var(--text-muted); }
+        .detail-list dd { font-weight: 600; }
+        @media (max-width: 760px) {
+            .header-inner { align-items: flex-start; flex-direction: column; gap: 1rem; }
+            nav { justify-content: flex-start; }
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+            .detail-list { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
-    <div class="bg-grid"></div>
-    <div class="floating-shapes">
-        <div class="shape"></div>
-        <div class="shape"></div>
-        <div class="shape"></div>
-        <div class="shape"></div>
-    </div>
-
-    <header class="header">
-        <nav class="nav-container">
-            <div class="logo">
-                <div class="logo-icon">
-                    <svg class="neon-bulb" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                        <defs>
-                            <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
-                                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-                                <feMerge>
-                                    <feMergeNode in="coloredBlur"/>
-                                    <feMergeNode in="SourceGraphic"/>
-                                </feMerge>
-                            </filter>
-                            <linearGradient id="neonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
-                                <stop offset="100%" style="stop-color:#8b45f1;stop-opacity:0.8" />
-                            </linearGradient>
-                        </defs>
-
-                        <!-- Abstract glowing lines background -->
-                        <path d="M10 20 Q30 10 50 20 T90 25" stroke="#8b45f1" stroke-width="1" fill="none" opacity="0.3">
-                            <animate attributeName="opacity" values="0.3;0.6;0.3" dur="4s" repeatCount="indefinite"/>
-                        </path>
-                        <path d="M15 80 Q35 70 55 75 T85 80" stroke="#6366f1" stroke-width="1" fill="none" opacity="0.4">
-                            <animate attributeName="opacity" values="0.4;0.7;0.4" dur="3s" repeatCount="indefinite"/>
-                        </path>
-
-                        <!-- Main bulb outline - geometric arc -->
-                        <path d="M35 45 Q35 25 50 25 Q65 25 65 45 Q65 55 60 60 L60 65 L40 65 L40 60 Q35 55 35 45 Z"
-                              fill="none" stroke="white" stroke-width="2" filter="url(#neonGlow)" opacity="0.9"/>
-
-                        <!-- Base -->
-                        <rect x="40" y="65" width="20" height="8" rx="2"
-                              fill="none" stroke="white" stroke-width="2" filter="url(#neonGlow)" opacity="0.9"/>
-                        <line x1="42" y1="67" x2="58" y2="67" stroke="white" stroke-width="1" opacity="0.7"/>
-                        <line x1="42" y1="70" x2="58" y2="70" stroke="white" stroke-width="1" opacity="0.7"/>
-
-                        <!-- Star-like sparkle -->
-                        <g transform="translate(70, 35)">
-                            <path d="M0,-8 L2,-2 L8,0 L2,2 L0,8 L-2,2 L-8,0 L-2,-2 Z"
-                                  fill="white" opacity="0.8" filter="url(#neonGlow)">
-                                <animateTransform attributeName="transform"
-                                                attributeType="XML"
-                                                type="rotate"
-                                                values="0;360"
-                                                dur="6s"
-                                                repeatCount="indefinite"/>
-                            </path>
-                        </g>
-
-                        <!-- Inner glow effect -->
-                        <ellipse cx="50" cy="40" rx="12" ry="15" fill="url(#neonGrad)" opacity="0.3">
-<animate attributeName="opacity" values="0.3;0.6;0.3" dur="2s" repeatCount="indefinite"/>
-                        </ellipse>
-                    </svg>
-                </div>
-                <div class="logo-text">CreditAI</div>
-            </div>
-            <ul class="nav-menu">
-                <li><a href="/about" class="nav-link">О нас</a></li>
-                <li><a href="/faq" class="nav-link">Полезные советы</a></li>
-            </ul>
-        </nav>
+    <header>
+        <div class="header-inner">
+            <a href="/" class="logo">🔥 CreditAI</a>
+            <nav>
+                <a href="/apply">Подать заявку</a>
+                <a href="/history">История</a>
+                <a href="/admin">Администрирование</a>
+                <a href="/about">О нас</a>
+                <a href="/faq">FAQ</a>
+            </nav>
+        </div>
     </header>
-
-    {% block content %}{% endblock %}
-
+    <main>
+        {% block content %}{% endblock %}
+    </main>
     {% block scripts %}{% endblock %}
 </body>
 </html>

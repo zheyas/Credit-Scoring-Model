@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Подача заявки на кредит{% endblock %}
+{% block content %}
+<div class="container">
+    <h2 class="page-title">Заявка на кредит</h2>
+    <p class="page-subtitle">
+        Данные клиента передаются в модель машинного обучения, после чего результат сохраняется
+        в базе вместе с заемщиком, ответственным сотрудником и параметрами решения.
+    </p>
+    {% if error %}
+    <div class="alert">{{ error }}</div>
+    {% endif %}
+    <form method="POST" action="/apply" class="scoring-form">
+        <fieldset>
+            <legend>Личные данные заемщика</legend>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>ФИО</label>
+                    <input type="text" name="full_name" required placeholder="Иванов Иван Иванович" value="{{ values.get('full_name', '') }}">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" required placeholder="example@mail.ru" value="{{ values.get('email', '') }}">
+                </div>
+                <div class="form-group">
+                    <label>Телефон</label>
+                    <input type="tel" name="phone" required placeholder="+7 (999) 000-00-00" value="{{ values.get('phone', '') }}">
+                </div>
+                <div class="form-group">
+                    <label>ID заемщика / хэш паспорта</label>
+                    <input type="text" name="passport_hash" required placeholder="client-0001" value="{{ values.get('passport_hash', '') }}">
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Организационные данные</legend>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Ответственный сотрудник</label>
+                    <select name="employee_id" required>
+                        {% for employee in employees %}
+                        <option value="{{ employee.id }}" {% if values.get('employee_id') == employee.id|string %}selected{% endif %}>
+                            {{ employee.full_name }} - {{ employee.department_name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Статус занятости</label>
+                    <select name="employment_status" required>
+                        {% for key, label in employment_status.items() %}
+                        <option value="{{ key }}" {% if values.get('employment_status') == key %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Признаки скоринговой модели</legend>
+            <div class="grid-2">
+                {% for key, label in features %}
+                <div class="form-group">
+                    <label>{{ label }}</label>
+                    <input type="number" name="{{ key }}" step="any" required placeholder="0" value="{{ values.get(key, '') }}">
+                </div>
+                {% endfor %}
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Параметры займа</legend>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Тип кредита</label>
+                    <select name="product_type" required>
+                        {% for key, label in product_names.items() %}
+                        <option value="{{ key }}" {% if values.get('product_type') == key %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Запрашиваемая сумма, руб.</label>
+                    <input type="number" name="requested_amount" step="1000" min="10000" required placeholder="300000" value="{{ values.get('requested_amount', '') }}">
+                </div>
+            </div>
+        </fieldset>
+
+        <button type="submit" class="btn-primary">Рассчитать условия</button>
+    </form>
+</div>
+{% endblock %}
